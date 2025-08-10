@@ -13,7 +13,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // IMD Routes
-    Route::resource('imds', ImdController::class)->except(['show', 'create', 'edit']);
+    Route::resource('imds', ImdController::class)->except(['create', 'edit']);
     Route::get('imds/export', [ImdController::class, 'export'])->name('imds.export');
 
     // Ask AI Routes

@@ -1,5 +1,5 @@
-import { Head, router, useForm } from '@inertiajs/react';
-import { Calendar, Clock, Download, Edit, FileText, Filter, MapPin, Plus, Search, Trash2, User, X } from 'lucide-react';
+import { Head, router, useForm, Link } from '@inertiajs/react';
+import { Calendar, Clock, Download, Edit, Eye, FileText, Filter, MapPin, Plus, Search, Trash2, User, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -520,6 +520,11 @@ export default function ImdIndex({ imds, filters }: Props) {
                                                 </div>
 
                                                 <div className="ml-4 flex flex-col gap-2">
+                                                    <Link href={route('imds.show', imd.id)}>
+                                                        <Button size="sm" variant="outline" className="w-full">
+                                                            <Eye className="h-4 w-4" />
+                                                        </Button>
+                                                    </Link>
                                                     <Button size="sm" variant="outline" onClick={() => openEditDialog(imd)}>
                                                         <Edit className="h-4 w-4" />
                                                     </Button>

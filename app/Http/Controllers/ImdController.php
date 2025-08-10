@@ -43,6 +43,13 @@ class ImdController extends Controller
         ]);
     }
 
+    public function show(Imd $imd): Response
+    {
+        return Inertia::render('imd/show', [
+            'imd' => $imd,
+        ]);
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
