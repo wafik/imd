@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm } from '@inertiajs/react';
-import { AlertCircle, Brain, CheckCircle, Database, Info, Lightbulb, Loader2, MessageSquare, Send, Sparkles } from 'lucide-react';
+import { Brain, CheckCircle, Database, Info, Lightbulb, Loader2, MessageSquare, Send, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -22,7 +22,6 @@ interface QueryResult {
     success: boolean;
     data?: Record<string, unknown>[];
     error?: string;
-    query?: string;
     count?: number;
 }
 
@@ -222,7 +221,7 @@ export default function AskAI() {
                                                         <span className="font-medium">Hasil Data:</span>
                                                     </div>
 
-                                                    {/* Show query results directly without showing the SQL */}
+                                                    {/* For queries, show query results status */}
                                                     {aiResponse.query_result?.success ? (
                                                         <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
                                                             <p className="text-blue-800 dark:text-blue-200">
@@ -244,6 +243,7 @@ export default function AskAI() {
                                                         <span className="font-medium">Jawaban AI:</span>
                                                     </div>
 
+                                                    {/* For non-queries, show the original answer from n8n */}
                                                     <div className="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
                                                         <p className="whitespace-pre-wrap text-green-800 dark:text-green-200">{aiResponse.answer}</p>
                                                     </div>
@@ -255,122 +255,104 @@ export default function AskAI() {
                             </Card>
                         </div>
 
-                        {/* Query Results */}
-                        {aiResponse?.is_query && aiResponse.query_result && (
+                        {/* Query Results - only show for successful queries */}
+                        {aiResponse?.is_query && aiResponse.query_result?.success && (
                             <Card className="shadow-lg">
                                 <CardHeader>
                                     <CardTitle className="flex items-center space-x-2">
-                                        {aiResponse.query_result.success ? (
-                                            <>
-                                                <CheckCircle className="h-5 w-5 text-green-600" />
-                                                <span>Hasil Data IMD</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <AlertCircle className="h-5 w-5 text-red-600" />
-                                                <span>Tidak Dapat Mengambil Data</span>
-                                            </>
-                                        )}
+                                        <CheckCircle className="h-5 w-5 text-green-600" />
+                                        <span>Hasil Data IMD</span>
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    {aiResponse.query_result.success ? (
-                                        <div className="space-y-4">
-                                            <div className="flex items-center justify-between">
-                                                <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                    {aiResponse.query_result.count === 1
-                                                        ? 'Ditemukan 1 data'
-                                                        : `Ditemukan ${aiResponse.query_result.count || 0} data`}
-                                                </p>
-                                            </div>
-
-                                            {aiResponse.query_result.data && aiResponse.query_result.data.length > 0 ? (
-                                                <div className="overflow-x-auto">
-                                                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                                        <thead className="bg-gray-50 dark:bg-gray-800">
-                                                            <tr>
-                                                                {Object.keys(aiResponse.query_result.data[0]).map((key) => (
-                                                                    <th
-                                                                        key={key}
-                                                                        className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
-                                                                    >
-                                                                        {/* Convert database column names to readable labels */}
-                                                                        {key === 'nama_ibu'
-                                                                            ? 'Nama Ibu'
-                                                                            : key === 'umur_ibu'
-                                                                              ? 'Umur Ibu'
-                                                                              : key === 'nama_bayi'
-                                                                                ? 'Nama Bayi'
-                                                                                : key === 'jenis_kelamin'
-                                                                                  ? 'Jenis Kelamin'
-                                                                                  : key === 'tanggal_lahir'
-                                                                                    ? 'Tanggal Lahir'
-                                                                                    : key === 'berat_badan'
-                                                                                      ? 'Berat Badan'
-                                                                                      : key === 'cara_persalinan'
-                                                                                        ? 'Cara Persalinan'
-                                                                                        : key === 'tempat_persalinan'
-                                                                                          ? 'Tempat Persalinan'
-                                                                                          : key === 'nama_petugas'
-                                                                                            ? 'Nama Petugas'
-                                                                                            : key === 'waktu_imd'
-                                                                                              ? 'Waktu IMD'
-                                                                                              : key === 'total'
-                                                                                                ? 'Total'
-                                                                                                : key === 'count'
-                                                                                                  ? 'Jumlah'
-                                                                                                  : key === 'rata_rata'
-                                                                                                    ? 'Rata-rata'
-                                                                                                    : key
-                                                                                                          .replace(/_/g, ' ')
-                                                                                                          .replace(/\b\w/g, (l) => l.toUpperCase())}
-                                                                    </th>
-                                                                ))}
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
-                                                            {aiResponse.query_result.data.slice(0, 10).map((row, index) => (
-                                                                <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                                                                    {Object.values(row).map((value, i) => (
-                                                                        <td
-                                                                            key={i}
-                                                                            className="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100"
-                                                                        >
-                                                                            {value === null ? '-' : String(value)}
-                                                                        </td>
-                                                                    ))}
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
-
-                                                    {aiResponse.query_result.data.length > 10 && (
-                                                        <div className="mt-4 text-center">
-                                                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                                Menampilkan 10 dari {aiResponse.query_result.data.length} data.
-                                                                <span className="ml-1 text-blue-600 dark:text-blue-400">
-                                                                    Untuk melihat lebih banyak, coba perbaiki pertanyaan Anda.
-                                                                </span>
-                                                            </p>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            ) : (
-                                                <div className="py-8 text-center text-gray-500">
-                                                    <Database className="mx-auto mb-4 h-12 w-12 opacity-50" />
-                                                    <p>Tidak ada data yang ditemukan</p>
-                                                    <p className="mt-2 text-sm">Coba ubah pertanyaan Anda atau gunakan kata kunci yang berbeda</p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
-                                            <p className="text-red-800 dark:text-red-200">
-                                                Maaf, tidak dapat memproses permintaan Anda saat ini. Silakan coba lagi dengan pertanyaan yang
-                                                berbeda.
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                {aiResponse.query_result.count === 1
+                                                    ? 'Ditemukan 1 data'
+                                                    : `Ditemukan ${aiResponse.query_result.count || 0} data`}
                                             </p>
                                         </div>
-                                    )}
+
+                                        {aiResponse.query_result.data && aiResponse.query_result.data.length > 0 ? (
+                                            <div className="overflow-x-auto">
+                                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                                    <thead className="bg-gray-50 dark:bg-gray-800">
+                                                        <tr>
+                                                            {Object.keys(aiResponse.query_result.data[0]).map((key) => (
+                                                                <th
+                                                                    key={key}
+                                                                    className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
+                                                                >
+                                                                    {/* Convert database column names to readable labels */}
+                                                                    {key === 'nama_ibu'
+                                                                        ? 'Nama Ibu'
+                                                                        : key === 'umur_ibu'
+                                                                          ? 'Umur Ibu'
+                                                                          : key === 'nama_bayi'
+                                                                            ? 'Nama Bayi'
+                                                                            : key === 'jenis_kelamin'
+                                                                              ? 'Jenis Kelamin'
+                                                                              : key === 'tanggal_lahir'
+                                                                                ? 'Tanggal Lahir'
+                                                                                : key === 'berat_badan'
+                                                                                  ? 'Berat Badan'
+                                                                                  : key === 'cara_persalinan'
+                                                                                    ? 'Cara Persalinan'
+                                                                                    : key === 'tempat_persalinan'
+                                                                                      ? 'Tempat Persalinan'
+                                                                                      : key === 'nama_petugas'
+                                                                                        ? 'Nama Petugas'
+                                                                                        : key === 'waktu_imd'
+                                                                                          ? 'Waktu IMD'
+                                                                                          : key === 'total'
+                                                                                            ? 'Total'
+                                                                                            : key === 'count'
+                                                                                              ? 'Jumlah'
+                                                                                              : key === 'rata_rata'
+                                                                                                ? 'Rata-rata'
+                                                                                                : key
+                                                                                                      .replace(/_/g, ' ')
+                                                                                                      .replace(/\b\w/g, (l) => l.toUpperCase())}
+                                                                </th>
+                                                            ))}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+                                                        {aiResponse.query_result.data.slice(0, 10).map((row, index) => (
+                                                            <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                                                {Object.values(row).map((value, i) => (
+                                                                    <td
+                                                                        key={i}
+                                                                        className="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100"
+                                                                    >
+                                                                        {value === null ? '-' : String(value)}
+                                                                    </td>
+                                                                ))}
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+
+                                                {aiResponse.query_result.data.length > 10 && (
+                                                    <div className="mt-4 text-center">
+                                                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                            Menampilkan 10 dari {aiResponse.query_result.data.length} data.
+                                                            <span className="ml-1 text-blue-600 dark:text-blue-400">
+                                                                Untuk melihat lebih banyak, coba perbaiki pertanyaan Anda.
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="py-8 text-center text-gray-500">
+                                                <Database className="mx-auto mb-4 h-12 w-12 opacity-50" />
+                                                <p>Tidak ada data yang ditemukan</p>
+                                                <p className="mt-2 text-sm">Coba ubah pertanyaan Anda atau gunakan kata kunci yang berbeda</p>
+                                            </div>
+                                        )}
+                                    </div>
                                 </CardContent>
                             </Card>
                         )}

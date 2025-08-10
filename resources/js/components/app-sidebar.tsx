@@ -3,7 +3,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Baby, LayoutGrid } from 'lucide-react';
+import { Baby, Brain, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -17,11 +17,11 @@ const mainNavItems: NavItem[] = [
         href: '/imds',
         icon: Baby,
     },
-    // {
-    //     title: 'Tanya AI',
-    //     href: '/ask-ai',
-    //     icon: Brain,
-    // },
+    {
+        title: 'Tanya AI',
+        href: '/ask-ai',
+        icon: Brain,
+    },
 ];
 
 export function AppSidebar() {

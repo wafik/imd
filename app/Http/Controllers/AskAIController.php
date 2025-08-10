@@ -30,7 +30,7 @@ class AskAIController extends Controller
 
         try {
             // Call n8n webhook
-            $response = Http::timeout(30)->post('https://workflow.wafik.net/webhook-test/58785576-3f79-4a87-a616-5d9a21db7d99', [
+            $response = Http::timeout(30)->post('https://workflow.wafik.net/webhook/imd-ai', [
                 'question' => $question,
                 'context' => 'Ini adalah aplikasi untuk data Inisiasi Menyusui Dini (IMD). Data disimpan dalam tabel `imds` dengan kolom: id, nama_ibu, umur_ibu, nama_bayi, jenis_kelamin, tanggal_lahir, berat_badan, cara_persalinan, tempat_persalinan, nama_petugas, waktu_imd, created_at, updated_at, deleted_at. Mohon berikan jawaban yang relevan dengan data IMD atau buatkan query SQL jika diperlukan.'
             ]);
@@ -56,9 +56,11 @@ class AskAIController extends Controller
                     // This is a query, execute it
                     $isQuery = true;
                     $queryResult = $this->executeQuery($aiResponse['output']);
+                    // For query responses, we'll let frontend decide what to show
                 } else {
-                    // This is a regular text response, not a query
+                    // This is a regular text response, keep the original answer
                     $isQuery = false;
+                    $answer = $aiResponse['output']; // Keep original output
                 }
             }
 
