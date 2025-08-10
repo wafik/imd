@@ -19,12 +19,18 @@ class ImdResource extends JsonResource
             'nama_pasien' => $this->nama_pasien,
             'alamat' => $this->alamat,
             'no_rm' => $this->no_rm,
-            'tanggal_lahir' => $this->tanggal_lahir?->format('Y-m-d'),
+            'tanggal_lahir' => $this->tanggal_lahir instanceof \Carbon\Carbon
+                ? $this->tanggal_lahir->format('Y-m-d')
+                : $this->tanggal_lahir,
             'cara_persalinan' => $this->cara_persalinan,
-            'tanggal_imd' => $this->tanggal_imd?->format('Y-m-d'),
+            'tanggal_imd' => $this->tanggal_imd instanceof \Carbon\Carbon
+                ? $this->tanggal_imd->format('Y-m-d')
+                : $this->tanggal_imd,
             'waktu_imd' => $this->waktu_imd,
             'nama_petugas' => $this->nama_petugas,
-            'umur' => $this->tanggal_lahir ? now()->diffInYears($this->tanggal_lahir) . ' tahun' : null,
+            'umur' => $this->tanggal_lahir instanceof \Carbon\Carbon
+                ? now()->diffInYears($this->tanggal_lahir) . ' tahun'
+                : null,
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
         ];

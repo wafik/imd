@@ -4,20 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
-import { 
-    ArrowLeft, 
-    Calendar, 
-    Clock, 
-    FileText, 
-    Heart, 
-    MapPin, 
-    Printer, 
-    Stethoscope, 
-    User, 
-    UserCheck,
-    Baby,
-    CalendarDays
-} from 'lucide-react';
+import { ArrowLeft, Baby, Calendar, CalendarDays, Clock, FileText, Heart, MapPin, Printer, Stethoscope, User, UserCheck } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -73,24 +60,21 @@ export default function ImdShow({ imd }: Props) {
     };
 
     const getWaktuImdBadge = (waktu: string) => {
-        const colorClasses = {
-            '15 menit': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-            '30 menit': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-            '45 menit': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-            '60 menit': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-        }[waktu] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+        const colorClasses =
+            {
+                '15 menit': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+                '30 menit': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+                '45 menit': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+                '60 menit': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+            }[waktu] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
 
-        return (
-            <Badge className={`text-sm ${colorClasses}`}>
-                {waktu}
-            </Badge>
-        );
+        return <Badge className={`text-sm ${colorClasses}`}>{waktu}</Badge>;
     };
 
     const handlePrint = () => {
         setIsPrinting(true);
         toast.success('Mempersiapkan kartu untuk dicetak...');
-        
+
         // Create a new window for printing
         const printWindow = window.open('', '_blank');
         if (printWindow) {
@@ -253,12 +237,12 @@ export default function ImdShow({ imd }: Props) {
                         </div>
                         <div class="footer">
                             <div class="qr-placeholder">QR Code</div>
-                            <p>Dicetak pada: ${new Date().toLocaleDateString('id-ID', { 
-                                year: 'numeric', 
-                                month: 'long', 
+                            <p>Dicetak pada: ${new Date().toLocaleDateString('id-ID', {
+                                year: 'numeric',
+                                month: 'long',
                                 day: 'numeric',
                                 hour: '2-digit',
-                                minute: '2-digit'
+                                minute: '2-digit',
                             })}</p>
                         </div>
                     </div>
@@ -266,7 +250,7 @@ export default function ImdShow({ imd }: Props) {
                 </html>
             `);
             printWindow.document.close();
-            
+
             setTimeout(() => {
                 printWindow.print();
                 printWindow.close();
@@ -297,8 +281,8 @@ export default function ImdShow({ imd }: Props) {
                             <p className="text-gray-600 dark:text-gray-400">Informasi lengkap data Inisiasi Menyusui Dini</p>
                         </div>
                     </div>
-                    <Button 
-                        onClick={handlePrint} 
+                    <Button
+                        onClick={handlePrint}
                         disabled={isPrinting}
                         className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                     >
@@ -321,15 +305,15 @@ export default function ImdShow({ imd }: Props) {
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <div className="space-y-4">
                                         <div className="flex items-start space-x-3">
-                                            <User className="h-5 w-5 text-gray-400 mt-0.5" />
+                                            <User className="mt-0.5 h-5 w-5 text-gray-400" />
                                             <div>
                                                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Nama Pasien</p>
                                                 <p className="text-lg font-semibold text-gray-900 dark:text-white">{imd.nama_pasien}</p>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="flex items-start space-x-3">
-                                            <FileText className="h-5 w-5 text-gray-400 mt-0.5" />
+                                            <FileText className="mt-0.5 h-5 w-5 text-gray-400" />
                                             <div>
                                                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">No. RM</p>
                                                 <p className="text-lg font-semibold text-gray-900 dark:text-white">{imd.no_rm}</p>
@@ -337,7 +321,7 @@ export default function ImdShow({ imd }: Props) {
                                         </div>
 
                                         <div className="flex items-start space-x-3">
-                                            <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
+                                            <MapPin className="mt-0.5 h-5 w-5 text-gray-400" />
                                             <div>
                                                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Alamat</p>
                                                 <p className="text-base text-gray-900 dark:text-white">{imd.alamat}</p>
@@ -347,7 +331,7 @@ export default function ImdShow({ imd }: Props) {
 
                                     <div className="space-y-4">
                                         <div className="flex items-start space-x-3">
-                                            <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
+                                            <Calendar className="mt-0.5 h-5 w-5 text-gray-400" />
                                             <div>
                                                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Tanggal Lahir</p>
                                                 <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatDate(imd.tanggal_lahir)}</p>
@@ -355,17 +339,15 @@ export default function ImdShow({ imd }: Props) {
                                         </div>
 
                                         <div className="flex items-start space-x-3">
-                                            <Stethoscope className="h-5 w-5 text-gray-400 mt-0.5" />
+                                            <Stethoscope className="mt-0.5 h-5 w-5 text-gray-400" />
                                             <div>
                                                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Cara Persalinan</p>
-                                                <div className="mt-1">
-                                                    {getCaraPersalinanBadge(imd.cara_persalinan)}
-                                                </div>
+                                                <div className="mt-1">{getCaraPersalinanBadge(imd.cara_persalinan)}</div>
                                             </div>
                                         </div>
 
                                         <div className="flex items-start space-x-3">
-                                            <UserCheck className="h-5 w-5 text-gray-400 mt-0.5" />
+                                            <UserCheck className="mt-0.5 h-5 w-5 text-gray-400" />
                                             <div>
                                                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Petugas Medis</p>
                                                 <p className="text-lg font-semibold text-gray-900 dark:text-white">{imd.nama_petugas}</p>
@@ -389,7 +371,7 @@ export default function ImdShow({ imd }: Props) {
                             <CardContent className="p-6">
                                 <div className="space-y-6">
                                     <div className="flex items-start space-x-3">
-                                        <CalendarDays className="h-5 w-5 text-gray-400 mt-0.5" />
+                                        <CalendarDays className="mt-0.5 h-5 w-5 text-gray-400" />
                                         <div>
                                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Tanggal IMD</p>
                                             <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatDate(imd.tanggal_imd)}</p>
@@ -397,19 +379,17 @@ export default function ImdShow({ imd }: Props) {
                                     </div>
 
                                     <div className="flex items-start space-x-3">
-                                        <Clock className="h-5 w-5 text-gray-400 mt-0.5" />
+                                        <Clock className="mt-0.5 h-5 w-5 text-gray-400" />
                                         <div>
                                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Durasi IMD</p>
-                                            <div className="mt-1">
-                                                {getWaktuImdBadge(imd.waktu_imd)}
-                                            </div>
+                                            <div className="mt-1">{getWaktuImdBadge(imd.waktu_imd)}</div>
                                         </div>
                                     </div>
 
                                     <Separator />
 
                                     <div className="rounded-lg bg-gradient-to-r from-green-50 to-blue-50 p-4 dark:from-green-900/20 dark:to-blue-900/20">
-                                        <div className="flex items-center space-x-2 mb-2">
+                                        <div className="mb-2 flex items-center space-x-2">
                                             <Baby className="h-5 w-5 text-green-600" />
                                             <h3 className="font-semibold text-green-800 dark:text-green-200">Status IMD</h3>
                                         </div>
@@ -441,7 +421,7 @@ export default function ImdShow({ imd }: Props) {
                                     </div>
                                     <div>
                                         <p className="font-medium text-gray-500 dark:text-gray-400">ID Record</p>
-                                        <p className="text-gray-900 dark:text-white font-mono text-xs">{imd.id}</p>
+                                        <p className="font-mono text-xs text-gray-900 dark:text-white">{imd.id}</p>
                                     </div>
                                 </div>
                             </CardContent>

@@ -23,4 +23,9 @@ class Imd extends Model
         'waktu_imd',
         'nama_petugas',
     ];
+
+    protected $casts = [
+        'tanggal_lahir' => 'date',
+        'tanggal_imd' => 'date',
+    ];
 }

@@ -15,6 +15,506 @@
         }
     ],
     "paths": {
+        "/api/ask-ai/question": {
+            "post": {
+                "tags": [
+                    "Ask AI"
+                ],
+                "summary": "Ask AI a question about IMD data",
+                "description": "Submit a natural language question to AI and get intelligent responses. AI can provide direct answers or generate SQL queries for data analysis.",
+                "operationId": "ba570f89f4dc5b680e960f5254c47875",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "question"
+                                ],
+                                "properties": {
+                                    "question": {
+                                        "description": "Natural language question about IMD data",
+                                        "type": "string",
+                                        "maxLength": 1000,
+                                        "example": "Berapa total data IMD yang tercatat bulan ini?"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "AI response received successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "question": {
+                                            "type": "string",
+                                            "example": "Berapa total data IMD yang tercatat?"
+                                        },
+                                        "is_query": {
+                                            "description": "Whether the response contains SQL query execution",
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "answer": {
+                                            "type": "string",
+                                            "example": "Berdasarkan data yang tersedia, total data IMD yang tercatat adalah 150 records."
+                                        },
+                                        "query_result": {
+                                            "description": "Query execution results if AI generated SQL query",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    },
+                                                    "example": [
+                                                        {
+                                                            "count": 150
+                                                        }
+                                                    ]
+                                                },
+                                                "count": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "query": {
+                                                    "type": "string",
+                                                    "example": "SELECT COUNT(*) as count FROM imds WHERE deleted_at IS NULL"
+                                                }
+                                            },
+                                            "type": "object",
+                                            "nullable": true
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-08-11T10:30:00.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The question field is required."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "question": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    },
+                                                    "example": [
+                                                        "The question field is required."
+                                                    ]
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error - AI service unavailable or internal error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Terjadi kesalahan saat menghubungi AI"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Connection timeout to AI service"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/ask-ai/execute-query": {
+            "post": {
+                "tags": [
+                    "Ask AI"
+                ],
+                "summary": "Execute SQL query directly",
+                "description": "Execute a SQL SELECT query directly against the IMD database. Only SELECT queries are allowed for security.",
+                "operationId": "2b508f0ea2aa5425d6ef5aa41ab2679c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "query"
+                                ],
+                                "properties": {
+                                    "query": {
+                                        "description": "SQL SELECT query to execute",
+                                        "type": "string",
+                                        "example": "SELECT COUNT(*) as total FROM imds WHERE cara_persalinan = \"SC\""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Query executed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            },
+                                            "example": [
+                                                {
+                                                    "total": 45
+                                                },
+                                                {
+                                                    "total": 67
+                                                }
+                                            ]
+                                        },
+                                        "count": {
+                                            "description": "Number of records returned",
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "query": {
+                                            "type": "string",
+                                            "example": "SELECT COUNT(*) as total FROM imds WHERE cara_persalinan = \"SC\""
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - invalid query or security violation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Hanya query SELECT yang diizinkan untuk keamanan"
+                                        },
+                                        "query": {
+                                            "type": "string",
+                                            "example": "UPDATE imds SET..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Query execution error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error executing query: Unknown column \"invalid_column\""
+                                        },
+                                        "query": {
+                                            "type": "string",
+                                            "example": "SELECT invalid_column FROM imds"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/ask-ai/execute-query-endpoint": {
+            "post": {
+                "tags": [
+                    "Ask AI"
+                ],
+                "summary": "Execute query endpoint wrapper",
+                "description": "HTTP endpoint wrapper for executing SQL queries with proper request validation",
+                "operationId": "78b558d90c48dfe574e18d361250ffea",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "query"
+                                ],
+                                "properties": {
+                                    "query": {
+                                        "description": "SQL SELECT query to execute",
+                                        "type": "string",
+                                        "example": "SELECT nama_pasien, cara_persalinan FROM imds LIMIT 10"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Query executed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            },
+                                            "example": [
+                                                {
+                                                    "nama_pasien": "Siti Nurhaliza",
+                                                    "cara_persalinan": "SC"
+                                                },
+                                                {
+                                                    "nama_pasien": "Dewi Sartika",
+                                                    "cara_persalinan": "Spontan"
+                                                }
+                                            ]
+                                        },
+                                        "count": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "query": {
+                                            "type": "string",
+                                            "example": "SELECT nama_pasien, cara_persalinan FROM imds LIMIT 10"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/ask-ai/samples": {
+            "get": {
+                "tags": [
+                    "Ask AI"
+                ],
+                "summary": "Get sample questions for AI",
+                "description": "Retrieve a list of sample questions that users can ask to the AI about IMD data",
+                "operationId": "259e6e7f6c64014821f4642be91b3174",
+                "responses": {
+                    "200": {
+                        "description": "Sample questions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": [
+                                                "Berapa total data IMD yang tercatat?",
+                                                "Tampilkan data IMD untuk bulan ini",
+                                                "Berapa rata-rata durasi IMD?",
+                                                "Tampilkan distribusi cara persalinan",
+                                                "Data IMD dengan durasi paling lama"
+                                            ]
+                                        },
+                                        "count": {
+                                            "description": "Number of sample questions",
+                                            "type": "integer",
+                                            "example": 10
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/ask-ai/schema": {
+            "get": {
+                "tags": [
+                    "Ask AI"
+                ],
+                "summary": "Get database schema information",
+                "description": "Retrieve database schema information for the IMD table to help with query construction",
+                "operationId": "e0f104875c63236428af598d6fa1a033",
+                "responses": {
+                    "200": {
+                        "description": "Database schema retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "table_name": {
+                                                    "type": "string",
+                                                    "example": "imds"
+                                                },
+                                                "columns": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "nama_pasien"
+                                                            },
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "varchar(255)"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "Nama lengkap pasien"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "sample_queries": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    },
+                                                    "example": [
+                                                        "SELECT COUNT(*) FROM imds",
+                                                        "SELECT cara_persalinan, COUNT(*) FROM imds GROUP BY cara_persalinan"
+                                                    ]
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/auth/login": {
             "post": {
                 "tags": [
@@ -337,6 +837,589 @@
                                                 "avatar_url": {
                                                     "type": "string",
                                                     "example": "https://example.com/storage/avatars/avatar.jpg"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get comprehensive dashboard analytics data",
+                "description": "Returns complete dashboard data including statistics, charts data, and recent records with advanced filtering capabilities for Flutter mobile app consumption",
+                "operationId": "d5fcadff7c52501c317a59bc00886f22",
+                "parameters": [
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Filter by specific year (e.g., 2024, 2025)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2025
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Filter by specific month (1-12)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 12,
+                            "minimum": 1,
+                            "example": 8
+                        }
+                    },
+                    {
+                        "name": "cara_persalinan",
+                        "in": "query",
+                        "description": "Filter by delivery method type",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "SC",
+                                "Spontan"
+                            ],
+                            "example": "SC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dashboard data retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dashboard data retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "stats": {
+                                                    "properties": {
+                                                        "total_imd": {
+                                                            "type": "integer",
+                                                            "example": 150
+                                                        },
+                                                        "sc_percentage": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 35.5
+                                                        },
+                                                        "spontan_percentage": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 64.5
+                                                        },
+                                                        "avg_duration": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 42.5
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "charts": {
+                                                    "properties": {
+                                                        "imd_by_cara_persalinan": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "example": "SC"
+                                                                    },
+                                                                    "value": {
+                                                                        "type": "integer",
+                                                                        "example": 45
+                                                                    },
+                                                                    "color": {
+                                                                        "type": "string",
+                                                                        "example": "#ef4444"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "imd_by_waktu": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "example": "30 menit"
+                                                                    },
+                                                                    "value": {
+                                                                        "type": "integer",
+                                                                        "example": 25
+                                                                    },
+                                                                    "color": {
+                                                                        "type": "string",
+                                                                        "example": "#f59e0b"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "monthly_trend": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "month": {
+                                                                        "type": "string",
+                                                                        "example": "Jan 2025"
+                                                                    },
+                                                                    "value": {
+                                                                        "type": "integer",
+                                                                        "example": 12
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "age_distribution": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "example": "26-30 tahun"
+                                                                    },
+                                                                    "value": {
+                                                                        "type": "integer",
+                                                                        "example": 35
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "recent_imds": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string",
+                                                                "example": "01HXYZ123456789"
+                                                            },
+                                                            "nama_pasien": {
+                                                                "type": "string",
+                                                                "example": "Siti Nurhaliza"
+                                                            },
+                                                            "no_rm": {
+                                                                "type": "string",
+                                                                "example": "RM001234"
+                                                            },
+                                                            "cara_persalinan": {
+                                                                "type": "string",
+                                                                "example": "SC"
+                                                            },
+                                                            "waktu_imd": {
+                                                                "type": "string",
+                                                                "example": "30 menit"
+                                                            },
+                                                            "tanggal_imd": {
+                                                                "type": "string",
+                                                                "format": "date",
+                                                                "example": "2025-08-11"
+                                                            },
+                                                            "nama_petugas": {
+                                                                "type": "string",
+                                                                "example": "Dr. Ahmad"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "filters": {
+                                                    "properties": {
+                                                        "year": {
+                                                            "type": "integer",
+                                                            "example": 2025
+                                                        },
+                                                        "month": {
+                                                            "type": "integer",
+                                                            "example": 8
+                                                        },
+                                                        "cara_persalinan": {
+                                                            "type": "string",
+                                                            "example": "SC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "available_years": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer"
+                                                    },
+                                                    "example": [
+                                                        2020,
+                                                        2021,
+                                                        2022,
+                                                        2023,
+                                                        2024,
+                                                        2025
+                                                    ]
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access - invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error - invalid filter parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to retrieve dashboard data"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/stats": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get dashboard statistics only",
+                "description": "Returns lightweight statistics data for quick dashboard updates and overview cards",
+                "operationId": "654e1617f74d2b9e0654ec77620d960b",
+                "parameters": [
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Filter statistics by specific year",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2025
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Filter statistics by specific month (1-12)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 12,
+                            "minimum": 1,
+                            "example": 8
+                        }
+                    },
+                    {
+                        "name": "cara_persalinan",
+                        "in": "query",
+                        "description": "Filter statistics by delivery method",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "SC",
+                                "Spontan"
+                            ],
+                            "example": "SC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistics retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Statistics retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "total_imd": {
+                                                    "description": "Total number of IMD records",
+                                                    "type": "integer",
+                                                    "example": 150
+                                                },
+                                                "sc_percentage": {
+                                                    "description": "Percentage of SC deliveries",
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 35.5
+                                                },
+                                                "spontan_percentage": {
+                                                    "description": "Percentage of spontaneous deliveries",
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 64.5
+                                                },
+                                                "avg_duration": {
+                                                    "description": "Average IMD duration in minutes",
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 42.5
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/charts": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get dashboard charts data",
+                "description": "Returns charts data for visualization with optional filtering by chart type for optimized API calls",
+                "operationId": "8b446d37f280952350fb9dea3ea65293",
+                "parameters": [
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Filter charts data by specific year",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2025
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Filter charts data by specific month (1-12)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 12,
+                            "minimum": 1,
+                            "example": 8
+                        }
+                    },
+                    {
+                        "name": "cara_persalinan",
+                        "in": "query",
+                        "description": "Filter charts data by delivery method",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "SC",
+                                "Spontan"
+                            ],
+                            "example": "SC"
+                        }
+                    },
+                    {
+                        "name": "chart_type",
+                        "in": "query",
+                        "description": "Request specific chart type only for optimized performance",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "cara_persalinan",
+                                "waktu",
+                                "monthly_trend",
+                                "age_distribution"
+                            ],
+                            "example": "cara_persalinan"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Charts data retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Charts data retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "imd_by_cara_persalinan": {
+                                                    "description": "IMD distribution by delivery method",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "SC"
+                                                            },
+                                                            "value": {
+                                                                "type": "integer",
+                                                                "example": 45
+                                                            },
+                                                            "color": {
+                                                                "type": "string",
+                                                                "example": "#ef4444"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "imd_by_waktu": {
+                                                    "description": "IMD distribution by duration",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "30 menit"
+                                                            },
+                                                            "value": {
+                                                                "type": "integer",
+                                                                "example": 25
+                                                            },
+                                                            "color": {
+                                                                "type": "string",
+                                                                "example": "#f59e0b"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "monthly_trend": {
+                                                    "description": "IMD trend over last 12 months",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "month": {
+                                                                "type": "string",
+                                                                "example": "Jan 2025"
+                                                            },
+                                                            "value": {
+                                                                "type": "integer",
+                                                                "example": 12
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "age_distribution": {
+                                                    "description": "Patient age distribution",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "26-30 tahun"
+                                                            },
+                                                            "value": {
+                                                                "type": "integer",
+                                                                "example": 35
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
                                                 }
                                             },
                                             "type": "object"
@@ -906,8 +1989,16 @@
     },
     "tags": [
         {
+            "name": "Ask AI",
+            "description": "AI-powered query and question answering system for IMD data analysis"
+        },
+        {
             "name": "Authentication",
             "description": "Authentication endpoints"
+        },
+        {
+            "name": "Dashboard",
+            "description": "Dashboard analytics endpoints for IMD data visualization and statistics"
         },
         {
             "name": "IMD",
