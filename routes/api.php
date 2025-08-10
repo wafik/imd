@@ -37,7 +37,12 @@ Route::middleware('auth:sanctum')->prefix('ask-ai')->group(function () {
 
 // IMD Data routes (protected)
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('imds', ImdController::class);
+    // change api resources to one by one
+    Route::get('imds', [ImdController::class, 'index'])->name('api.imds.index');
+    Route::post('imds', [ImdController::class, 'store'])->name('api.imds.store');
+    Route::get('imds/{id}', [ImdController::class, 'show'])->name('api.imds.show');
+    Route::put('imds/{id}', [ImdController::class, 'update'])->name('api.imds.update');
+    Route::delete('imds/{id}', [ImdController::class, 'destroy'])->name('api.imds.destroy');
 });
 
 // Legacy Ask AI routes (protected with web auth for session) - for web interface
