@@ -32,13 +32,18 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:' . User::class . '|regex:/^[a-zA-Z0-9_]+$/',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'phone' => 'required|string|max:20|unique:' . User::class,
+            'phone' => 'required|string|max:20|unique:' . User::class . '|regex:/^[\+]?[0-9\s\-\(\)]+$/',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'username.regex' => 'Username can only contain letters, numbers, and underscores.',
+            'phone.regex' => 'Please enter a valid phone number.',
         ]);
 
         $user = User::create([
             'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),

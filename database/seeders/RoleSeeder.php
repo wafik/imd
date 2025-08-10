@@ -32,7 +32,7 @@ class RoleSeeder extends Seeder
         }
 
         $roles = [
-            ['guard_name' => 'web', 'name' => 'member'],
+            ['guard_name' => 'web', 'name' => 'user'],
             ['guard_name' => 'web', 'name' => 'administrator'],
         ];
 
@@ -42,17 +42,10 @@ class RoleSeeder extends Seeder
 
         app()['cache']->forget('spatie.permission.cache');
 
-        Role::findByName('member', 'web')->givePermissionTo([
+        Role::findByName('user', 'web')->givePermissionTo([
             'access-management-dashboard',
         ]);
-        Role::findByName('editor', 'web')->givePermissionTo([
-            'access-management',
-            'access-management-dashboard',
-            'access-management-posts',
-            'access-all-posts',
-            'publish-posts',
-            'auto-publish-posts',
-        ]);
+
         Role::findByName('administrator', 'web')->givePermissionTo(Permission::all());
 
         // Permission::flushQueryCache();
