@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImdController;
+use App\Http\Controllers\AskAIController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -14,6 +15,9 @@ Route::middleware(['auth'])->group(function () {
     // IMD Routes
     Route::resource('imds', ImdController::class)->except(['show', 'create', 'edit']);
     Route::get('imds/export', [ImdController::class, 'export'])->name('imds.export');
+
+    // Ask AI Routes
+    Route::get('ask-ai', [AskAIController::class, 'index'])->name('ask-ai');
 });
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

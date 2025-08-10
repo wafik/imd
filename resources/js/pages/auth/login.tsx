@@ -4,7 +4,6 @@ import { FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
 
 import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -161,7 +160,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 </div>
 
                 {/* Sign Up Link */}
-                <div className="border-t border-gray-200 pt-4 text-center dark:border-gray-700">
+                {/* <div className="border-t border-gray-200 pt-4 text-center dark:border-gray-700">
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                         Don't have an account?{' '}
                         <TextLink
@@ -172,7 +171,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             Create account
                         </TextLink>
                     </p>
-                </div>
+                </div> */}
             </form>
         </AuthLayout>
     );

@@ -17,6 +17,11 @@ const mainNavItems: NavItem[] = [
         href: '/imds',
         icon: Baby,
     },
+    // {
+    //     title: 'Tanya AI',
+    //     href: '/ask-ai',
+    //     icon: Brain,
+    // },
 ];
 
 export function AppSidebar() {
