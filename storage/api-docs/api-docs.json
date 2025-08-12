@@ -15,14 +15,14 @@
         }
     ],
     "paths": {
-        "/api/ask-ai/question": {
+        "/api/ask-to-ai/question": {
             "post": {
                 "tags": [
                     "Ask AI"
                 ],
                 "summary": "Ask AI a question about IMD data",
                 "description": "Submit a natural language question to AI and get intelligent responses. AI can provide direct answers or generate SQL queries for data analysis.",
-                "operationId": "ba570f89f4dc5b680e960f5254c47875",
+                "operationId": "9331ebd3af014ca1f102095e39a533fb",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -191,14 +191,14 @@
                 ]
             }
         },
-        "/api/ask-ai/execute-query": {
+        "/api/ask-to-ai/execute-query": {
             "post": {
                 "tags": [
                     "Ask AI"
                 ],
                 "summary": "Execute SQL query directly",
                 "description": "Execute a SQL SELECT query directly against the IMD database. Only SELECT queries are allowed for security.",
-                "operationId": "2b508f0ea2aa5425d6ef5aa41ab2679c",
+                "operationId": "b1f759b98b34456491ea121c9fb4e42f",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -315,14 +315,14 @@
                 ]
             }
         },
-        "/api/ask-ai/execute-query-endpoint": {
+        "/api/ask-to-ai/execute-query-endpoint": {
             "post": {
                 "tags": [
                     "Ask AI"
                 ],
                 "summary": "Execute query endpoint wrapper",
                 "description": "HTTP endpoint wrapper for executing SQL queries with proper request validation",
-                "operationId": "78b558d90c48dfe574e18d361250ffea",
+                "operationId": "7fef3bd179ac32486486a4c3b2331e59",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -392,14 +392,14 @@
                 ]
             }
         },
-        "/api/ask-ai/samples": {
+        "/api/ask-to-ai/samples": {
             "get": {
                 "tags": [
                     "Ask AI"
                 ],
                 "summary": "Get sample questions for AI",
                 "description": "Retrieve a list of sample questions that users can ask to the AI about IMD data",
-                "operationId": "259e6e7f6c64014821f4642be91b3174",
+                "operationId": "336f6365d3580099111a81f3aab3c564",
                 "responses": {
                     "200": {
                         "description": "Sample questions retrieved successfully",
@@ -443,14 +443,14 @@
                 ]
             }
         },
-        "/api/ask-ai/schema": {
+        "/api/ask-to-ai/schema": {
             "get": {
                 "tags": [
                     "Ask AI"
                 ],
                 "summary": "Get database schema information",
                 "description": "Retrieve database schema information for the IMD table to help with query construction",
-                "operationId": "e0f104875c63236428af598d6fa1a033",
+                "operationId": "d588a4c82f708040a2c5d2e8aec58fd4",
                 "responses": {
                     "200": {
                         "description": "Database schema retrieved successfully",

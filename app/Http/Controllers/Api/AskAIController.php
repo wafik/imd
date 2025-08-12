@@ -16,7 +16,7 @@ use OpenApi\Attributes as OA;
 class AskAIController extends Controller
 {
     #[OA\Post(
-        path: '/api/ask-ai/question',
+        path: '/api/ask-to-ai/question',
         summary: 'Ask AI a question about IMD data',
         description: 'Submit a natural language question to AI and get intelligent responses. AI can provide direct answers or generate SQL queries for data analysis.',
         security: [['bearerAuth' => []]],
@@ -182,7 +182,7 @@ class AskAIController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/ask-ai/execute-query',
+        path: '/api/ask-to-ai/execute-query',
         summary: 'Execute SQL query directly',
         description: 'Execute a SQL SELECT query directly against the IMD database. Only SELECT queries are allowed for security.',
         security: [['bearerAuth' => []]],
@@ -289,7 +289,7 @@ class AskAIController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/ask-ai/execute-query-endpoint',
+        path: '/api/ask-to-ai/execute-query-endpoint',
         summary: 'Execute query endpoint wrapper',
         description: 'HTTP endpoint wrapper for executing SQL queries with proper request validation',
         security: [['bearerAuth' => []]],
@@ -345,7 +345,7 @@ class AskAIController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/ask-ai/samples',
+        path: '/api/ask-to-ai/samples',
         summary: 'Get sample questions for AI',
         description: 'Retrieve a list of sample questions that users can ask to the AI about IMD data',
         security: [['bearerAuth' => []]],
@@ -401,7 +401,7 @@ class AskAIController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/ask-ai/schema',
+        path: '/api/ask-to-ai/schema',
         summary: 'Get database schema information',
         description: 'Retrieve database schema information for the IMD table to help with query construction',
         security: [['bearerAuth' => []]],

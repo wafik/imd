@@ -27,12 +27,17 @@ Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {
     Route::get('/charts', [DashboardController::class, 'charts']);
 });
 
-// Ask AI routes (protected)
-Route::middleware('auth:sanctum')->prefix('ask-ai')->group(function () {
-    Route::post('/question', [AskAIController::class, 'askQuestion']);
-    Route::post('/execute-query', [AskAIController::class, 'executeQueryEndpoint']);
+// Ask AI routes
+Route::prefix('ask-to-ai')->group(function () {
+    // Public routes
     Route::get('/samples', [AskAIController::class, 'getSampleQuestions']);
-    Route::get('/schema', [AskAIController::class, 'getSchema']);
+
+    // Protected routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/question', [AskAIController::class, 'askQuestion']);
+        Route::post('/execute-query', [AskAIController::class, 'executeQueryEndpoint']);
+        Route::get('/schema', [AskAIController::class, 'getSchema']);
+    });
 });
 
 // IMD Data routes (protected)
