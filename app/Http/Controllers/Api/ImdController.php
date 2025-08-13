@@ -226,11 +226,29 @@ class ImdController extends Controller
                     ]
                 )
             ),
-            new OA\Response(response: 404, description: 'IMD record not found')
+            new OA\Response(
+                response: 404,
+                description: 'IMD record not found',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: false),
+                        new OA\Property(property: 'message', type: 'string', example: 'Data IMD tidak ditemukan')
+                    ]
+                )
+            )
         ]
     )]
-    public function show(Imd $imd): JsonResponse
+    public function show(string $id): JsonResponse
     {
+        $imd = Imd::find($id);
+
+        if (!$imd) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data IMD tidak ditemukan'
+            ], 404);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Data IMD berhasil diambil',
@@ -268,12 +286,40 @@ class ImdController extends Controller
                     ]
                 )
             ),
-            new OA\Response(response: 404, description: 'IMD record not found'),
-            new OA\Response(response: 422, description: 'Validation error')
+            new OA\Response(
+                response: 404,
+                description: 'IMD record not found',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: false),
+                        new OA\Property(property: 'message', type: 'string', example: 'Data IMD tidak ditemukan')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation error',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: false),
+                        new OA\Property(property: 'message', type: 'string', example: 'Validation error'),
+                        new OA\Property(property: 'errors', type: 'object')
+                    ]
+                )
+            )
         ]
     )]
-    public function update(Request $request, Imd $imd): JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
+        $imd = Imd::find($id);
+
+        if (!$imd) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data IMD tidak ditemukan'
+            ], 404);
+        }
+
         $validator = Validator::make($request->all(), [
             'nama_pasien' => 'required|string|max:255',
             'alamat' => 'required|string|max:500',
@@ -338,11 +384,29 @@ class ImdController extends Controller
                     ]
                 )
             ),
-            new OA\Response(response: 404, description: 'IMD record not found')
+            new OA\Response(
+                response: 404,
+                description: 'IMD record not found',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: false),
+                        new OA\Property(property: 'message', type: 'string', example: 'Data IMD tidak ditemukan')
+                    ]
+                )
+            )
         ]
     )]
-    public function destroy(Imd $imd): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
+        $imd = Imd::find($id);
+
+        if (!$imd) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data IMD tidak ditemukan'
+            ], 404);
+        }
+
         $imd->delete();
 
         return response()->json([
