@@ -95,7 +95,6 @@ class ImdController extends Controller
             'no_rm.required' => 'No RM wajib diisi.',
             'no_rm.unique' => 'No RM sudah digunakan.',
             'tanggal_lahir.required' => 'Tanggal lahir wajib diisi.',
-            'tanggal_lahir.before' => 'Tanggal lahir harus sebelum hari ini.',
             'cara_persalinan.required' => 'Cara persalinan wajib dipilih.',
             'tanggal_imd.required' => 'Tanggal IMD wajib diisi.',
             'waktu_imd.required' => 'Waktu IMD wajib dipilih.',
