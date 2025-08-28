@@ -14,7 +14,8 @@ Route::middleware(['auth'])->group(function () {
 
     // IMD Routes
     Route::resource('imds', ImdController::class)->except(['create', 'edit']);
-    Route::get('imds/export', [ImdController::class, 'export'])->name('imds.export');
+    Route::get('imds/detail/{imd}', [ImdController::class, 'show'])->name('imds.show');
+    Route::get('download/export', [ImdController::class, 'export'])->name('imds.export');
 
     // Ask AI Routes
     Route::get('ask-ai', [AskAIController::class, 'index'])->name('ask-ai');
